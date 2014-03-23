@@ -1,0 +1,57 @@
+--program to control 16 d-flip flops wired up to this turtle with bundled cables & colored wires
+
+op = {write = {{title = "black", color = 32768}, -- used to turn on the right output to write to a bit
+				{title = "brown", color = 4096},
+				{title = "gray", color = 128},
+				{title = "blue", color = 2048}},
+	  enable = {{title = "white", color = 1},
+				{title = "yellow", color = 16},
+				{title = "magenta", color = 4},
+				{title = "pink", color = 64}},
+	  read = {{title = "lightBlue", color = 8},
+	          {title = "orange", color = 2},
+			  {title = "lime", color = 32},
+			  {title = "green", color = 8192}}}
+function clear() -- stops you writing to bits
+    rs.setBundledOutput("front", 0)
+	rs.setBundledOutput("back", 0)
+	rs.setBundledOutput("right", 0)
+	rs.setBundledOutput("left", 0)
+end
+function decode(bool)
+  if bool then
+    return 1
+  else
+    return 0
+  end
+end
+function write(side, bit, value)
+ if value == 1 then
+   rs.setBundledOutput(side, op.enable[bit].color + op.write[bit].color)
+ else
+   rs.setBundledOutput(side, op.enable[bit].color)  
+ end
+ sleep(0.5) -- needs a delay or it might screw up
+ clear()
+end
+function read(side, bit)
+  return decode((colors.test(redstone.getBundledInput(side), op.read[bit].color)))
+end
+function invert(side, bit)
+  if read(side, bit) == 1 then
+    write(side, bit, 0)
+  else
+    write(side, bit, 1)
+  end
+end
+
+clear()
+for i = 1, 4 do -- will take 8 seconds to invert 16 bits
+  invert("front", i)
+  invert("back", i)
+  invert("right", i)
+  invert("left", i)
+end
+num = ""
+for i = 1, 4 do num = num .. read("front", i) .. read("back", i) .. read("right", i) .. read("left", i)  .. " " end
+print(num) -- prints out in binary format all 16 bits to the screen, every 4 bits followed by a space to make it more readable

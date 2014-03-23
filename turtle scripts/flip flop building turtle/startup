@@ -1,0 +1,133 @@
+fuelCheckState = 1
+inventoryCheckState = 2
+buildState = 3
+state = 1
+
+stoneSlot = 1
+redstoneSlot = 2
+torchSlot = 3
+repeaterSlot = 4
+done = false
+function turnPlace(slot)
+  turtle.select(slot)
+  turtle.turnRight()
+  turtle.turnRight()
+  turtle.place()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+while not done do
+  if state == fuelCheckState then
+    if turtle.getFuelLevel() > 200 then
+	  state = inventoryCheckState
+	else
+	  print("need fuel...")
+	  sleep(180)
+	end
+  end
+  if state == inventoryCheckState then
+    state = buildState
+  end
+  if state == buildState then
+    turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.select(stoneSlot)
+	turtle.place()
+	turtle.turnRight()
+	turtle.turnRight()
+	turtle.forward()
+	turnPlace(stoneSlot)
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.turnRight()
+    turtle.up()
+    turtle.select(stoneSlot)
+    turtle.place()
+	turtle.up()
+	turtle.place()
+	turtle.select(torchSlot)
+	turtle.placeDown()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.select(stoneSlot)
+	turtle.place()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.select(torchSlot)
+	turtle.place()
+	turtle.down()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.select(repeaterSlot)
+	turtle.place()
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.turnRight()
+	turtle.select(redstoneSlot)
+	turtle.place()
+	turtle.turnRight()
+	turtle.up()
+	turtle.forward()
+	turnPlace(stoneSlot)
+	turtle.forward()
+	turtle.down()
+	turtle.select(stoneSlot)
+	turtle.place()
+	turtle.placeDown()
+	turtle.up()
+	turtle.select(redstoneSlot)
+	turtle.placeDown()
+	turtle.turnLeft()
+	turtle.select(stoneSlot)
+	turtle.place()
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.turnRight()
+	turtle.forward()
+	turtle.down()
+	turtle.down()
+	turtle.select(stoneSlot)
+	turtle.placeDown()
+	turtle.up()
+	turtle.turnRight()
+	turtle.turnRight()
+	turtle.select(torchSlot)
+	turtle.place()
+	turtle.up()
+	turtle.select(redstoneSlot)
+	turtle.placeDown()
+	turtle.select(stoneSlot)
+	turtle.place()
+	turtle.up()--top of flip flop
+	turtle.forward()
+	turtle.forward()
+	turtle.select(redstoneSlot)
+	turnPlace()
+	turtle.forward()
+	turnPlace()
+	turtle.forward()
+	turnPlace(repeaterSlot)
+	turtle.turnLeft()
+	turtle.select(redstoneSlot)
+	turtle.place()
+	turtle.turnRight()
+	turtle.turnRight()
+	turtle.forward()
+	turnPlace(redstoneSlot)
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.down()
+	turtle.down()
+	turtle.down()
+    done = true
+  end
+end

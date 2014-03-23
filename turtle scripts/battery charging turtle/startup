@@ -1,0 +1,42 @@
+outputSide = "bottom"
+chargeTime = 15
+waitTime = 15
+numBatteries = 8
+
+--find right direction
+while turtle.detect() do
+  turtle.turnLeft()
+end
+
+while true do
+  --grab batteries to charge
+  turtle.turnLeft()
+  for i = 1, numBatteries do
+    turtle.suck()
+  end
+  turtle.turnRight()
+  rs.setOutput(outputSide, true)
+  
+  --charge batteries  
+  for i = 1, 16 do
+    turtle.select(i)
+    turtle.turnRight()
+    turtle.drop(1)
+    turtle.turnLeft()
+    rs.setOutput(outputSide, false)
+    sleep(chargeTime)
+    rs.setOutput(outputSide, true)
+    sleep(5)
+  end
+  
+  --drop off charged batteries
+  for i = 1, 16 do
+    if turtle.getItemCount(i) == 1 then
+      turtle.select(i)
+      turtle.turnLeft()
+      turtle.drop()
+      turtle.turnRight()
+    end
+  end
+  sleep(waitTime)
+end

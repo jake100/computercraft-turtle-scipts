@@ -1,0 +1,56 @@
+snowSlots = {slotStart = 1, slotEnd = 10}
+pumpkinSlots = {slotStart = 11, slotEnd = 16}
+function placeCheck()
+  turtle.place()
+  if not turtle.detect() then
+    print("obstructed...")
+    sleep(2)
+	placeCheck()
+  end
+end
+function placeSnow()
+  for i = snowSlots.slotStart, snowSlots.slotEnd do
+    if turtle.getItemCount(i) > 0 then
+	  turtle.select(i)
+	  placeCheck()
+	  break
+	else
+	  if i == snowSlots.slotEnd then
+	    print("no snow...")
+		sleep(120)
+	  end
+	end
+  end
+end
+function placePumpkin()
+  for i = pumpkinSlots.slotStart, pumpkinSlots.slotEnd do
+    if turtle.getItemCount(i) > 0 then
+	  turtle.select(i)
+	  turtle.place()
+	  break
+	else
+	  if i == pumkinSlots.slotEnd then
+	    print("no pumpkins...")
+	    sleep(120)
+	  end
+	end
+  end
+end
+while true do
+  for i = 1, 4 do
+    placeSnow()
+    turtle.turnRight()
+  end
+  turtle.up()
+  for i = 1, 4 do
+    placeSnow()
+    turtle.turnRight()
+  end
+  turtle.up()
+  for i = 1, 4 do
+    placePumpkin()
+	turtle.turnRight()
+  end
+  turtle.down()
+  turtle.down()
+end

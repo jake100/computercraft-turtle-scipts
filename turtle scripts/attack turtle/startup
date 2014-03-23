@@ -1,0 +1,40 @@
+--save this as startup, place fueled up turtle toward the enemy
+--will attack in straight line untill it hits a wall then it will come back
+hit = false
+search = false -- turtle will check left and right if it stops hitting the enemy
+while true do
+  if hit then
+    hit = false
+	while turtle.attack() do hit = true end
+    while turtle.attackUp() do hit = true end
+	if not hit then
+	  search = true
+	end
+  else
+    while turtle.attack() do hit = true end
+    while turtle.attackUp() do hit = true end
+  end
+  if search then
+    turtle.turnRight()
+	while turtle.attack() do end
+	turtle.turnLeft()
+	while turtle.attack() do end
+	turtle.turnLeft()
+	while turtle.attack() do end
+	turtle.turnRight()
+	search = false
+  end
+  if not hit then
+    turtle.suck()
+  end
+  if not turtle.forward() then -- the turtle attacks 3 times to make sure there is no block ahead
+    while turtle.attack() do end
+	if not turtle.forward() then
+	  while turtle.attack() do end
+	  if not turtle.forward() then
+	  	turtle.turnRight()
+	    turtle.turnRight()
+	  end
+	end
+  end
+end

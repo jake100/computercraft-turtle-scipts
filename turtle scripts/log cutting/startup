@@ -1,0 +1,133 @@
+local logSlot = 1
+local saplingSlot = 2
+
+local findGroundState = 1
+local findDirState = 2
+local logCheckState = 3
+local loggingState = 4
+local clearingState = 5
+local returnState = 6
+local storeState = 7
+local waitState = 8
+local refuelState = 9
+local state = 1
+
+local aboveGround = false
+function changeState(newState)
+  print("state #" .. newState)
+  state = newState
+end
+
+while true do
+  if state == findGroundState then
+    while not turtle.detectDown() do
+      if aboveGround == false then
+        turtle.select(logSlot)
+        while turtle.compareUp() do
+     	    turtle.digUp()
+	         turtle.up()
+	       end
+      end
+      aboveGround = true
+      turtle.down()
+    end
+	
+    if aboveGround then
+      print("stuck")
+	  while aboveGround do
+	    turtle.forward()
+		if turtle.detectDown() then
+		  turtle.turnRight()
+		  turtle.turnRight()
+		  turtle.select(sapling)
+		  turtle.place()
+		  changeState(findDirState)
+		end
+	  end
+    end
+	   changeState(findDirState)
+  end
+  
+  if state == findDirState then
+    for i = 1, 4 do
+      turtle.turnRight()
+	  turtle.select(logSlot)
+      if turtle.compare() then
+	    changeState(loggingState)
+        break
+      else
+	    turtle.select(saplingSlot)
+        turtle.place()
+      end
+
+    end
+  end
+  if state == logCheckState then
+   turtle.select(logSlot)
+    if turtle.compare() then
+      changeState(loggingState)
+    else
+      turtle.suck()
+      sleep(3)
+    end
+  end
+  
+  if state == loggingState then
+    turtle.dig()
+    turtle.forward()
+    for i = 1, 5 do
+      turtle.digUp()
+      turtle.up()
+    end
+	changeState(clearingState)
+  end
+  
+  if state == clearingState then
+    for i = 1, 4 do
+      for j = 1, 4 do
+        turtle.dig()
+        turtle.turnRight()
+      end
+	  turtle.down()
+    end
+    turtle.select(saplingSlot)
+    turtle.placeDown()
+	sleep(5)
+	changeState(returnState)
+  end
+  
+  if state == returnState then
+    turtle.turnRight()
+    turtle.turnRight()
+	turtle.dig()
+    turtle.forward()
+    turtle.down()
+   
+    changeState(storeState)
+  end
+  
+  if state == storeState then
+    for i = 3, 7 do
+      turtle.select(i)
+      turtle.drop()
+    end
+    turtle.turnRight()
+    turtle.turnRight()
+    changeState(waitState)
+  end
+  
+  if state == waitState then
+    sleep(4)
+    changeState(refuelState)
+  end
+  
+  if state == refuelState then
+    if turtle.getItemCount(logSlot) > 1 then
+	  turtle.select(logSlot)
+      turtle.refuel(1)
+      changeState(logCheckState)
+    else
+      changeState(waitState)
+    end
+  end
+end

@@ -1,0 +1,158 @@
+local startsignal = 1024
+local inventoryCheckState = 1
+local fuelCheckState = 2
+local positionCheckState = 3
+local signalCheckState = 4
+local gotoStoreState = 5
+local harvestState = 6
+local returnState = 7
+local storeState = 8
+
+local state = 1
+
+local fuelSlot = 1
+local seedSlot = 2
+local dirtSlot = 3
+local bonemealSlot = 4
+
+local hasBonemeal = false
+function changeStateTo(newState)
+  state = newState
+  print("state #" .. state)
+end
+function harvest()
+  turtle.dig()
+  turtle.dig()
+  turtle.select(seedSlot)  
+  turtle.place()
+  turtle.suck()
+end
+while true do
+  if state == inventoryCheckState then
+    if turtle.getItemCount(fuelSlot) > 1 and turtle.getItemCount(seedSlot) > 1  and turtle.getItemCount(dirtSlot) == 1 then
+	  changeStateTo(fuelCheckState)
+	  if turtle.getItemCount(bonemealSlot) > 0 then
+	    hasBonemeal = true
+	  else
+	    hasBonemeal = false
+	  end
+	else
+	  print("add supplies...")
+	  sleep(5)
+	end
+  end
+  
+  if state == fuelCheckState then
+    if turtle.getFuelLevel() < 500 then
+	  if turtle.getItemCount(fuelSlot) > 10 then
+	    turtle.select(fuelSlot)
+		turtle.refuel(10)
+	  else
+	    changeStateTo(gotoStoreState)
+	  end
+	else
+	  changeStateTo(positionCheckState)
+	end
+  end
+  
+  if state == positionCheckState then
+    if turtle.detectDown() then
+	  changeStateTo(signalCheckState)
+	else
+	  hasLoot = false
+	  for i = 5, 13 do
+	    if turtle.getItemCount(i) > 0 then
+		  hasLoot = true
+		  changeStateTo(harvestState)
+		  break
+		end
+	  end
+	  if not hasLoot then
+	    changeStateTo(returnState)
+	  end
+	end
+  end
+  
+  if state == signalCheckState then
+    if colors.test(rs.getBundledInput("bottom"), startsignal) then
+	  changStateTo(harvestState)
+	else
+	  sleep(0.05)
+	end
+  end
+  
+  if state == gotoStoreState then
+    while not turtle.detectUp() do
+	  turtle.up()
+	end
+	changeStateTo(storeState)
+  end
+  
+  if state == harvestState then
+    while not turtle.detectUp() do
+	  level = 0
+	  if level == 0 then
+	    turtle.select(dirtSlot)
+	    if turtle.compare() then
+		  level = 1
+		else 
+		  level = 2
+		end
+	  end
+	  if level == 1 then
+	    turtle.up()
+	  end
+	  if level == 2 then
+	    for i = 1, 4 do
+		  harvest()
+		  if hasBonemeal then
+		    turtle.select(bonemealSlot)
+			turtle.place()
+			harvest()
+		  end
+		  turtle.turnRight()
+		end
+        turtle.up()	
+	  end
+	end
+	for i = 1, 4 do
+		  harvest()
+		  if hasBonemeal then
+		    turtle.select(bonemealSlot)
+			turtle.place()
+			harvest()
+		  end
+		  turtle.turnRight()
+		end
+	changeStateTo(storeState)
+  end
+  
+  if state == returnState then
+    while not turtle.detectDown() do
+	  turtle.down()
+	end
+  end
+  
+  if state == storeState then
+    for i = 1, 4 do
+	  if not turtle.detect() then
+	    break
+      else
+	  	turtle.turnRight()
+	  end
+	end
+	turtle.turnRight()
+	for i = 5, 16 do
+	  turtle.select(i)
+	  turtle.drop()
+	end
+	turtle.turnRight()
+	turtle.select(fuelSlot)
+	if turtle.getItemCount(fuelSlot) < 32 then
+	  turtle.suck(32)
+	end
+	turtle.turnRight()
+	turtle.suck(64 - turtle.getItemCount(bonemealSlot))
+	changeStateTo(returnState)
+  end
+end

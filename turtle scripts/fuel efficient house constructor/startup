@@ -1,0 +1,79 @@
+function getStone()
+  for i = 1, 4 do
+    if turtle.getItemCount(i) > 0 then
+	  turtle.select(i)
+	  break
+	end
+  end
+end
+function placeRoof(length)
+  for i = 1, 4 do
+    for j = 1, length do
+      getStone()
+	  turtle.placeUp()
+      turtle.forward()
+    end
+    turtle.turnLeft()
+  end
+end
+function placePart()
+  getStone()
+  turtle.placeUp()
+  turtle.turnRight()
+  turtle.turnRight()
+  getStone()
+  turtle.place()
+  getStone()
+  turtle.placeDown()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+function placeBehind()
+  turtle.turnRight()
+  turtle.turnRight()
+  getStone()
+  turtle.place()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+turtle.up()
+turtle.turnRight()
+placeBehind()
+for i = 1, 4 do
+  for j = 1, 7 do
+    if i == 1 and j == 4 then
+	  getStone()
+	  turtle.placeUp()
+	  turtle.turnRight()
+	  turtle.turnRight()
+	  getStone()
+	  turtle.place()
+	  turtle.turnRight()
+	  turtle.turnRight()
+	elseif i == 1 and j == 5 then
+	  getStone()
+	  turtle.placeUp()
+	  getStone()
+	  turtle.placeDown()
+	else
+	  placePart()
+	end
+    turtle.forward()
+  end
+  placeBehind()
+  turtle.turnLeft()
+  turtle.forward()
+end
+placeBehind()
+turtle.up()
+for i = 1, 4 do
+  placeRoof(8 - i * 2)
+  if i == 4 then
+    getStone()
+    turtle.placeUp()
+  end
+  turtle.forward()
+  turtle.turnLeft()
+  turtle.forward()
+  turtle.turnRight()
+end
